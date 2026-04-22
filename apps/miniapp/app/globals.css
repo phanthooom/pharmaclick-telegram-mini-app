@@ -1,13 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --app-bg: #eef6f3;
+  --brand-primary: #27c267;
+  --brand-primary-strong: #1ea758;
+  --brand-primary-soft: #eefaf3;
+  --brand-accent: #dff6e8;
 
-  --tg-bg_color: #ffffff;
-  --tg-text_color: #0f172a;
-  --tg-hint_color: #64748b;
-  --tg-button_color: #10b981;
-  --tg-button_text_color: #ffffff;
+  --surface-base: #f6faf7;
+  --surface-card: #ffffff;
+  --surface-muted: #f3f6f4;
+
+  --border-soft: #d8e9dd;
+  --border-strong: #c7dfcf;
+
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-soft: #8aa097;
+
+  --warning-bg: #fff8ea;
+  --warning-border: #efd48b;
+  --warning-text: #9a6400;
 
   --safe-top: 0px;
   --safe-right: 0px;
@@ -29,8 +41,8 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100%;
-  background: var(--tg-bg_color, var(--app-bg));
-  color: var(--tg-text_color, #0f172a);
+  background: var(--surface-base);
+  color: var(--text-primary);
   font-family:
     Inter,
     ui-sans-serif,
@@ -46,7 +58,7 @@ body {
 }
 
 html[data-tg="true"] body {
-  background: var(--tg-bg_color, #ffffff);
+  background: var(--surface-base);
 }
 
 button,
@@ -59,4 +71,26 @@ select {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+.pharmaclick-shell {
+  min-height: 100dvh;
+  background:
+    linear-gradient(180deg, #f8fcf9 0%, #f3f8f4 100%);
+}
+
+.pharmaclick-card {
+  border: 1px solid var(--border-soft);
+  background: var(--surface-card);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+}
+
+.pharmaclick-chip {
+  border: 1px solid #cfe9d7;
+  background: var(--brand-primary-soft);
+  color: var(--brand-primary-strong);
+}
+
+.pharmaclick-section-title {
+  letter-spacing: -0.02em;
 }
