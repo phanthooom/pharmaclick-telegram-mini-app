@@ -50,13 +50,17 @@ export default function HomePage() {
     ? "w-full min-h-[100dvh] bg-white"
     : "mx-auto w-full max-w-[430px] min-h-screen bg-white shadow-[0_0_40px_rgba(15,23,42,0.08)]";
 
+  const headerTopPadding = isTelegram
+    ? "calc(var(--content-safe-top) + 72px)"
+    : "16px";
+
   return (
     <main className="min-h-[100dvh] bg-[var(--tg-bg_color,var(--app-bg))] text-slate-900">
       <div className={shellClass}>
         <header
           className="sticky top-0 z-20 border-b border-slate-100 bg-white/90 px-4 pb-4 backdrop-blur"
           style={{
-            paddingTop: "max(16px, var(--content-safe-top))",
+            paddingTop: headerTopPadding,
             paddingLeft: "max(16px, var(--content-safe-left))",
             paddingRight: "max(16px, var(--content-safe-right))",
           }}
