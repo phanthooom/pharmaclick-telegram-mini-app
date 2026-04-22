@@ -38,7 +38,7 @@ export default function HomePage() {
     <main className="pc-shell">
       <div className={shellClass}>
         <header
-          className="pc-glass relative z-10 border-b border-[var(--border-soft)]"
+          className="pc-glass border-b border-[var(--border-soft)]"
           style={{
             paddingTop: headerTopPadding,
             paddingBottom: "10px",
