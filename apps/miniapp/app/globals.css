@@ -2,28 +2,35 @@
 
 :root {
   --app-bg: #eef6f3;
+
   --tg-bg_color: #ffffff;
   --tg-text_color: #0f172a;
   --tg-hint_color: #64748b;
   --tg-button_color: #10b981;
   --tg-button_text_color: #ffffff;
+
+  --safe-top: 0px;
+  --safe-right: 0px;
+  --safe-bottom: 0px;
+  --safe-left: 0px;
+
+  --content-safe-top: 0px;
+  --content-safe-right: 0px;
+  --content-safe-bottom: 0px;
+  --content-safe-left: 0px;
 }
 
 * {
   box-sizing: border-box;
 }
 
-html {
-  background: var(--app-bg);
-}
-
+html,
 body {
   margin: 0;
   min-width: 320px;
-  background:
-    radial-gradient(circle at top, rgba(16, 185, 129, 0.12), transparent 30%),
-    linear-gradient(180deg, #f7fbfa 0%, #eef6f3 100%);
-  color: var(--tg-text_color);
+  min-height: 100%;
+  background: var(--tg-bg_color, var(--app-bg));
+  color: var(--tg-text_color, #0f172a);
   font-family:
     Inter,
     ui-sans-serif,
@@ -32,6 +39,14 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+html[data-tg="true"] body {
+  background: var(--tg-bg_color, #ffffff);
 }
 
 button,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { getTelegramWebApp, initTelegramWebApp } from "../lib/telegram";
+import { getTelegramWebApp, initTelegramWebApp, isTelegramEnvironment } from "../lib/telegram";
 
 const categories = [
   "Лекарства",
@@ -46,10 +46,21 @@ export default function HomePage() {
       : "Режим обычного браузера";
   }, [isTelegram]);
 
+  const shellClass = isTelegramEnvironment()
+    ? "w-full min-h-[100dvh] bg-white"
+    : "mx-auto w-full max-w-[430px] min-h-screen bg-white shadow-[0_0_40px_rgba(15,23,42,0.08)]";
+
   return (
-    <main className="min-h-screen bg-[var(--app-bg)] text-slate-900">
-      <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col bg-white shadow-[0_0_40px_rgba(15,23,42,0.08)]">
-        <header className="sticky top-0 z-20 border-b border-slate-100 bg-white/90 px-4 pb-4 pt-[max(16px,env(safe-area-inset-top))] backdrop-blur">
+    <main className="min-h-[100dvh] bg-[var(--tg-bg_color,var(--app-bg))] text-slate-900">
+      <div className={shellClass}>
+        <header
+          className="sticky top-0 z-20 border-b border-slate-100 bg-white/90 px-4 pb-4 backdrop-blur"
+          style={{
+            paddingTop: "max(16px, var(--content-safe-top))",
+            paddingLeft: "max(16px, var(--content-safe-left))",
+            paddingRight: "max(16px, var(--content-safe-right))",
+          }}
+        >
           <div className="mb-4 flex items-start justify-between gap-3">
             <div>
               <p className="text-xs font-medium uppercase tracking-[0.18em] text-emerald-600">
@@ -74,14 +85,18 @@ export default function HomePage() {
           </div>
         </header>
 
-        <section className="px-4 pt-4">
+        <section
+          className="px-4 pt-4"
+          style={{
+            paddingLeft: "max(16px, var(--content-safe-left))",
+            paddingRight: "max(16px, var(--content-safe-right))",
+          }}
+        >
           <div className="rounded-[28px] bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 p-5 text-white shadow-lg">
             <div className="text-xs uppercase tracking-[0.18em] text-white/80">
               Telegram Mini App
             </div>
-            <h2 className="mt-2 text-2xl font-bold">
-              Онлайн-аптека нового формата
-            </h2>
+            <h2 className="mt-2 text-2xl font-bold">Онлайн-аптека нового формата</h2>
             <p className="mt-2 text-sm text-white/90">
               Быстрый поиск, корзина, оформление заказа, избранное и личный кабинет.
             </p>
@@ -91,7 +106,13 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="px-4 pt-5">
+        <section
+          className="px-4 pt-5"
+          style={{
+            paddingLeft: "max(16px, var(--content-safe-left))",
+            paddingRight: "max(16px, var(--content-safe-right))",
+          }}
+        >
           <div className="mb-3 flex items-center justify-between">
             <h3 className="text-lg font-semibold">Категории</h3>
             <button className="text-sm font-medium text-emerald-700">Все</button>
@@ -109,7 +130,13 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="px-4 pt-5">
+        <section
+          className="px-4 pt-5"
+          style={{
+            paddingLeft: "max(16px, var(--content-safe-left))",
+            paddingRight: "max(16px, var(--content-safe-right))",
+          }}
+        >
           <div className="mb-3 flex items-center justify-between">
             <h3 className="text-lg font-semibold">Популярные товары</h3>
             <button className="text-sm font-medium text-emerald-700">См. всё</button>
@@ -136,10 +163,7 @@ export default function HomePage() {
                     </h4>
 
                     <div className="mt-3 flex items-center justify-between">
-                      <span className="text-base font-bold text-slate-900">
-                        {product.price}
-                      </span>
-
+                      <span className="text-base font-bold text-slate-900">{product.price}</span>
                       <button className="rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white">
                         В корзину
                       </button>
@@ -151,7 +175,13 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="px-4 pb-28 pt-5">
+        <section
+          className="px-4 pb-28 pt-5"
+          style={{
+            paddingLeft: "max(16px, var(--content-safe-left))",
+            paddingRight: "max(16px, var(--content-safe-right))",
+          }}
+        >
           <div className="rounded-[24px] border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
             <div className="mb-1 font-semibold">Важно</div>
             Самолечение может быть вредным для здоровья. Перед применением лекарственных
@@ -159,7 +189,14 @@ export default function HomePage() {
           </div>
         </section>
 
-        <nav className="fixed bottom-0 left-1/2 z-30 flex w-full max-w-[430px] -translate-x-1/2 items-center justify-around border-t border-slate-200 bg-white px-2 pb-[max(12px,env(safe-area-inset-bottom))] pt-3">
+        <nav
+          className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-around border-t border-slate-200 bg-white px-2 pt-3"
+          style={{
+            paddingLeft: "max(8px, var(--content-safe-left))",
+            paddingRight: "max(8px, var(--content-safe-right))",
+            paddingBottom: "max(12px, var(--content-safe-bottom))",
+          }}
+        >
           {navItems.map((item) => {
             const active = activeNav === item.key;
 

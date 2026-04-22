@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "./globals.css";
+import { TelegramProvider } from "../components/telegram-provider";
 
 export const metadata: Metadata = {
   title: "PharmaClick Mini App",
@@ -10,7 +12,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#0f172a",
+  themeColor: "#eef6f3",
 };
 
 export default function RootLayout({
@@ -20,7 +22,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body>{children}</body>
+      <body>
+        <Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" />
+        <TelegramProvider />
+        {children}
+      </body>
     </html>
   );
 }
