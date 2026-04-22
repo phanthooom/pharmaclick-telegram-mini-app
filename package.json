@@ -1,0 +1,14 @@
+{
+  "name": "pharmaclick-telegram-mini-app",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.11.0",
+  "scripts": {
+    "dev:miniapp": "pnpm --filter miniapp dev",
+    "dev:admin": "pnpm --filter admin dev",
+    "build:miniapp": "pnpm --filter miniapp build",
+    "build:admin": "pnpm --filter admin build",
+    "lint": "pnpm -r lint",
+    "format": "pnpm -r format"
+  }
+}
