@@ -1,14 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { BottomNav } from "../components/bottom-nav";
 import { getTelegramWebApp, initTelegramWebApp, isTelegramEnvironment } from "../lib/telegram";
 import { homeCategoryChips, products } from "../lib/pharmaclick-data";
 
 export default function HomePage() {
+  const router = useRouter();
+
   const [isTelegram, setIsTelegram] = useState(false);
   const [username, setUsername] = useState("Гость");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const tg = initTelegramWebApp();
@@ -33,6 +37,18 @@ export default function HomePage() {
   const headerTopPadding = isTelegram
     ? "calc(var(--content-safe-top) + 52px)"
     : "16px";
+
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const value = search.trim();
+    if (value) {
+      router.push(`/catalog?q=${encodeURIComponent(value)}`);
+      return;
+    }
+
+    router.push("/catalog");
+  };
 
   return (
     <main className="pc-shell">
@@ -85,12 +101,30 @@ export default function HomePage() {
             </div>
           </div>
 
-          <Link
-            href="/catalog"
-            className="pc-card block rounded-[22px] px-4 py-3 text-[14px] leading-6 text-[var(--text-secondary)]"
-          >
-            🔎 Поиск по лекарствам, витаминам, косметике и товарам аптек
-          </Link>
+          <form onSubmit={handleSearchSubmit} className="mt-2">
+            <div className="pc-search-wrap">
+              <div className="pc-search-animated flex items-center gap-3 rounded-[20px] px-3 py-2.5">
+                <div className="pc-search-icon flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary-soft)] text-[18px]">
+                  🔎
+                </div>
+
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Поиск по лекарствам, витаминам и товарам аптек"
+                  className="min-w-0 flex-1 bg-transparent text-[14px] text-[var(--text-primary)] outline-none placeholder:text-[var(--text-secondary)]"
+                />
+
+                <button
+                  type="submit"
+                  className="shrink-0 rounded-full bg-[var(--brand-primary)] px-3 py-2 text-[12px] font-semibold text-white shadow-[0_10px_20px_rgba(198,10,143,0.18)] transition hover:scale-[1.02]"
+                >
+                  Найти
+                </button>
+              </div>
+            </div>
+          </form>
         </header>
 
         <section className="pc-section-padding px-4 pt-3">
