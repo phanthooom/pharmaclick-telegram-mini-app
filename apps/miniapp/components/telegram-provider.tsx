@@ -50,38 +50,71 @@ export function TelegramProvider() {
             setCssVar("--content-safe-left", `${content.left ?? 0}px`);
         };
 
+        const onViewportChanged = () => {
+            applyInsetsAndViewport();
+            console.log("[TG] viewportChanged", {
+                viewportHeight: tg.viewportHeight,
+                viewportStableHeight: tg.viewportStableHeight,
+                isFullscreen: tg.isFullscreen,
+            });
+        };
+
+        const onSafeAreaChanged = () => {
+            applyInsetsAndViewport();
+            console.log("[TG] safeAreaChanged", tg.safeAreaInset);
+        };
+
+        const onContentSafeAreaChanged = () => {
+            applyInsetsAndViewport();
+            console.log("[TG] contentSafeAreaChanged", tg.contentSafeAreaInset);
+        };
+
+        const onFullscreenChanged = () => {
+            applyInsetsAndViewport();
+            console.log("[TG] fullscreenChanged", {
+                isFullscreen: tg.isFullscreen,
+            });
+        };
+
+        const onFullscreenFailed = (...args: any[]) => {
+            console.log("[TG] fullscreenFailed", args);
+        };
+
+        const onResize = () => {
+            applyInsetsAndViewport();
+        };
+
         try {
             tg.ready?.();
             tg.expand?.();
             tg.disableVerticalSwipes?.();
 
-            if (tg.isVersionAtLeast?.("8.0") && !tg.isFullscreen) {
-                try {
-                    tg.requestFullscreen?.();
-                } catch {
-                    // fallback: expand() уже вызван
-                }
+            try {
+                tg.requestFullscreen?.();
+            } catch (e) {
+                console.log("[TG] requestFullscreen error", e);
             }
-        } catch {
-            // no-op
+        } catch (e) {
+            console.log("[TG] init error", e);
         }
 
         applyInsetsAndViewport();
 
-        const onViewportChanged = () => applyInsetsAndViewport();
-        const onSafeAreaChanged = () => applyInsetsAndViewport();
-        const onContentSafeAreaChanged = () => applyInsetsAndViewport();
-        const onResize = () => applyInsetsAndViewport();
-
         tg.onEvent?.("viewportChanged", onViewportChanged);
         tg.onEvent?.("safeAreaChanged", onSafeAreaChanged);
         tg.onEvent?.("contentSafeAreaChanged", onContentSafeAreaChanged);
+        tg.onEvent?.("fullscreenChanged", onFullscreenChanged);
+        tg.onEvent?.("fullscreenFailed", onFullscreenFailed);
+
         window.addEventListener("resize", onResize);
 
         return () => {
             tg.offEvent?.("viewportChanged", onViewportChanged);
             tg.offEvent?.("safeAreaChanged", onSafeAreaChanged);
             tg.offEvent?.("contentSafeAreaChanged", onContentSafeAreaChanged);
+            tg.offEvent?.("fullscreenChanged", onFullscreenChanged);
+            tg.offEvent?.("fullscreenFailed", onFullscreenFailed);
+
             window.removeEventListener("resize", onResize);
         };
     }, []);
