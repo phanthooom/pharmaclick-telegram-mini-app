@@ -4,8 +4,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { BottomNav } from "../components/bottom-nav";
+import { DeliverySheet } from "../components/delivery-sheet";
 import { getTelegramWebApp, initTelegramWebApp, isTelegramEnvironment } from "../lib/telegram";
 import { homeCategoryChips, products } from "../lib/pharmaclick-data";
+
+const DELIVERY_STORAGE_KEY = "pharmaclick_delivery_address_v1";
+
+function shortDeliveryLabel(address: string) {
+  if (!address) return "Ташкент";
+  const parts = address.split(",").map((item) => item.trim()).filter(Boolean);
+  return parts.slice(0, 2).join(", ");
+}
 
 export default function HomePage() {
   const router = useRouter();
@@ -13,6 +22,8 @@ export default function HomePage() {
   const [isTelegram, setIsTelegram] = useState(false);
   const [username, setUsername] = useState("Гость");
   const [search, setSearch] = useState("");
+  const [isDeliveryOpen, setIsDeliveryOpen] = useState(false);
+  const [deliveryLabel, setDeliveryLabel] = useState("Ташкент");
 
   useEffect(() => {
     const tg = initTelegramWebApp();
@@ -22,6 +33,16 @@ export default function HomePage() {
     if (user?.first_name) {
       setUsername(user.first_name);
     }
+
+    try {
+      const raw = window.localStorage.getItem(DELIVERY_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed?.address) {
+          setDeliveryLabel(shortDeliveryLabel(parsed.address));
+        }
+      }
+    } catch { }
   }, []);
 
   const subtitle = useMemo(() => {
@@ -77,14 +98,17 @@ export default function HomePage() {
               <p className="pc-subtitle mt-2 text-[14px]">{subtitle}</p>
             </div>
 
-            <div className="shrink-0 rounded-[18px] bg-[var(--brand-primary-soft)] px-3 py-2 text-right">
+            <button
+              onClick={() => setIsDeliveryOpen(true)}
+              className="shrink-0 rounded-[18px] bg-[var(--brand-primary-soft)] px-3 py-2 text-right transition hover:scale-[1.01]"
+            >
               <div className="text-[10px] leading-none text-[var(--text-secondary)]">
                 Доставка
               </div>
-              <div className="mt-1 text-[13px] font-semibold leading-none text-[var(--brand-primary-strong)]">
-                Ташкент
+              <div className="mt-1 max-w-[120px] truncate text-[13px] font-semibold leading-none text-[var(--brand-primary-strong)]">
+                {deliveryLabel}
               </div>
-            </div>
+            </button>
           </div>
 
           <div className="mb-2 flex items-center gap-2">
@@ -215,6 +239,14 @@ export default function HomePage() {
         </section>
 
         <BottomNav />
+
+        <DeliverySheet
+          open={isDeliveryOpen}
+          onClose={() => setIsDeliveryOpen(false)}
+          onSaved={(payload) => {
+            setDeliveryLabel(shortDeliveryLabel(payload.address));
+          }}
+        />
       </div>
     </main>
   );

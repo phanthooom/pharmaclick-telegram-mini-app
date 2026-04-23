@@ -12,8 +12,10 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#eef6f3",
+  themeColor: "#fffafe",
 };
+
+const yandexApiKey = process.env.NEXT_PUBLIC_YANDEX_MAPS_API_KEY;
 
 export default function RootLayout({
   children,
@@ -23,7 +25,16 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body>
-        <Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" />
+        <Script
+          src="https://telegram.org/js/telegram-web-app.js"
+          strategy="beforeInteractive"
+        />
+        {yandexApiKey ? (
+          <Script
+            src={`https://api-maps.yandex.ru/v3/?apikey=${yandexApiKey}&lang=ru_RU`}
+            strategy="beforeInteractive"
+          />
+        ) : null}
         <TelegramProvider />
         {children}
       </body>
