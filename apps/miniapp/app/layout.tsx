@@ -29,6 +29,17 @@ export default function RootLayout({
           src="https://telegram.org/js/telegram-web-app.js"
           strategy="beforeInteractive"
         />
+        {/*
+          Early bootstrap: runs synchronously as the browser parses <body>,
+          after beforeInteractive scripts (telegram-web-app.js) have already executed.
+          This prevents the compact bottom-sheet flash before React hydrates.
+          TelegramProvider's useEffect still runs later for CSS vars + event subscriptions.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var wa=window.Telegram&&window.Telegram.WebApp;if(!wa)return;if(wa.ready)wa.ready();if(wa.expand)wa.expand();try{if(wa.requestFullscreen)wa.requestFullscreen();}catch(e){}if(wa.disableVerticalSwipes)wa.disableVerticalSwipes();}catch(e){}})();`,
+          }}
+        />
         <TelegramProvider />
         <AppShell>{children}</AppShell>
       </body>
