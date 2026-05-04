@@ -49,9 +49,12 @@ function applyTelegramInsets(tg: {
     const cBottom = Math.max(Number(content.bottom ?? 0), Number(safe.bottom ?? 0));
     const cLeft = Math.max(Number(content.left ?? 0), Number(safe.left ?? 0));
 
-    const inFullscreen = Boolean(tg.isFullscreen);
-    const headerPadPx =
-        cTop > 0 ? cTop : !inFullscreen ? TELEGRAM_LEGACY_TOP_INSET_PX : 0;
+    // Mirror croissant reference: Math.max(safeTop, 72) — always at least 72px inside Telegram.
+    // In expanded (non-fullscreen) mode contentSafeAreaInset.top is 0, so the 72px floor covers
+    // the Telegram "X Close" bar. In fullscreen mode the value is the actual overlay height (~55-70px)
+    // and max() ensures we never go below 72. Removing the inFullscreen branch avoids a bug where
+    // fullscreen + zero inset (old clients) would set the header padding to 0.
+    const headerPadPx = Math.max(cTop, TELEGRAM_LEGACY_TOP_INSET_PX);
 
     setCssVar("--app-height", `${Math.max(1, stableHeight)}px`);
 
