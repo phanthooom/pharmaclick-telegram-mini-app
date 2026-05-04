@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { initTelegramWebApp } from "../lib/telegram";
+import { ensureTelegramViewport, initTelegramWebApp } from "../lib/telegram";
 
 function setCssVar(name: string, value: string) {
     document.documentElement.style.setProperty(name, value);
@@ -85,6 +85,9 @@ export function TelegramProvider() {
         };
 
         const onViewportChanged = () => {
+            if (tg.isExpanded !== true) {
+                ensureTelegramViewport(tg);
+            }
             applyInsetsAndViewport();
         };
 
@@ -105,19 +108,24 @@ export function TelegramProvider() {
         };
 
         const onResize = () => {
+            ensureTelegramViewport(tg);
             applyInsetsAndViewport();
         };
 
-        try {
-            tg.requestFullscreen?.();
-        } catch {
-            /* older clients */
-        }
+        ensureTelegramViewport(tg);
 
         applyInsetsAndViewport();
         requestAnimationFrame(() => {
+            ensureTelegramViewport(tg);
             applyInsetsAndViewport();
         });
+        const expandDelays = [50, 150, 400, 800] as const;
+        const expandTimers = expandDelays.map((ms) =>
+            window.setTimeout(() => {
+                ensureTelegramViewport(tg);
+                applyInsetsAndViewport();
+            }, ms),
+        );
 
         tg.onEvent?.("viewportChanged", onViewportChanged);
         tg.onEvent?.("safeAreaChanged", onSafeAreaChanged);
@@ -128,6 +136,7 @@ export function TelegramProvider() {
         window.addEventListener("resize", onResize);
 
         return () => {
+            expandTimers.forEach((id) => clearTimeout(id));
             tg.offEvent?.("viewportChanged", onViewportChanged);
             tg.offEvent?.("safeAreaChanged", onSafeAreaChanged);
             tg.offEvent?.("contentSafeAreaChanged", onContentSafeAreaChanged);

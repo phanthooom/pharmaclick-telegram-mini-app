@@ -23,6 +23,8 @@ export type TelegramWebApp = {
   setHeaderColor?: (color: string) => void;
   setBackgroundColor?: (color: string) => void;
   colorScheme?: "light" | "dark";
+  /** True when the Mini App occupies the maximum height (not the compact bottom sheet). */
+  isExpanded?: boolean;
   isFullscreen?: boolean;
   viewportHeight?: number;
   viewportStableHeight?: number;
@@ -54,14 +56,30 @@ export function isTelegramEnvironment() {
   return Boolean(getTelegramWebApp());
 }
 
+/** Expand + optional fullscreen; safe to call many times. */
+export function ensureTelegramViewport(tg: TelegramWebApp | null | undefined) {
+  if (!tg) return;
+  try {
+    tg.expand?.();
+  } catch {
+    /* noop */
+  }
+  try {
+    tg.requestFullscreen?.();
+  } catch {
+    /* unsupported or not yet allowed */
+  }
+}
+
 export function initTelegramWebApp(): TelegramWebApp | null {
   const tg = getTelegramWebApp();
   if (!tg) return null;
 
-  tg.ready?.();
-  tg.expand?.();
+  // expand() must run before ready() so Telegram opens the sheet at max height first
+  ensureTelegramViewport(tg);
   tg.disableVerticalSwipes?.();
   tg.enableClosingConfirmation?.();
+  tg.ready?.();
 
   const root = document.documentElement;
   const theme = tg.themeParams ?? {};
