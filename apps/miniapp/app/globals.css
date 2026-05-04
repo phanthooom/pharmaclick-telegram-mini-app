@@ -4,6 +4,7 @@
   box-sizing: border-box;
 }
 
+/* ── Design tokens ───────────────────────────────────────────────────────── */
 :root {
   --green-50: #f0faf5;
   --green-100: #dcf5e8;
@@ -62,23 +63,28 @@
   --brand-primary-dark: var(--green-700);
   --border-soft: rgba(17, 24, 39, 0.06);
 
+  /* ── Telegram safe-area vars (default = 0, overwritten by TelegramProvider) */
   --app-height: 100dvh;
-  --safe-top: 0px;
-  --safe-right: 0px;
-  --safe-bottom: 0px;
-  --safe-left: 0px;
-  --content-safe-top: 0px;
-  --content-safe-right: 0px;
-  --content-safe-bottom: 0px;
-  --content-safe-left: 0px;
+  --tg-safe-top: 0px;
+  --tg-safe-bottom: 0px;
+  --tg-content-safe-top: 0px;
+  --tg-content-safe-bottom: 0px;
+  --tg-header-pad: 0px;
+  /* ← ключевая переменная */
+
+  /* legacy aliases */
+  --safe-top: var(--tg-safe-top);
+  --safe-bottom: var(--tg-safe-bottom);
+  --content-safe-top: var(--tg-content-safe-top);
+  --content-safe-bottom: var(--tg-content-safe-bottom);
 }
 
+/* ── Base ────────────────────────────────────────────────────────────────── */
 html,
 body {
   margin: 0;
   padding: 0;
   height: 100%;
-  min-height: 100%;
   background: var(--neutral-50);
   color: var(--neutral-900);
   font-family: Inter, Arial, Helvetica, sans-serif;
@@ -97,12 +103,6 @@ a {
   text-decoration: none;
 }
 
-button,
-input,
-textarea {
-  font: inherit;
-}
-
 button {
   border: none;
   cursor: pointer;
@@ -110,45 +110,50 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
+button,
+input,
+textarea {
+  font: inherit;
+}
+
 img {
   display: block;
   max-width: 100%;
 }
 
+/* ── App container ───────────────────────────────────────────────────────── */
 .pc-app {
   min-height: var(--app-height);
-  padding-left: max(0px, var(--content-safe-left));
-  padding-right: max(0px, var(--content-safe-right));
   background:
     radial-gradient(circle at top right, rgba(20, 184, 166, 0.08), transparent 26%),
     radial-gradient(circle at top left, rgba(0, 135, 90, 0.08), transparent 20%),
     var(--neutral-50);
 }
 
-.pc-main {
-  min-height: var(--app-height);
-  padding-top: calc(var(--header-height) + var(--safe-top));
-  padding-bottom: calc(78px + var(--content-safe-bottom));
-}
-
+/* ── Header ──────────────────────────────────────────────────────────────── */
+/*
+ * padding-top = var(--tg-header-pad)  ← установлен TelegramProvider
+ * Никаких inline-style из React. Нет ре-рендеров, нет CLS.
+ */
 .pc-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: calc(var(--header-height) + var(--safe-top));
-  padding-top: var(--safe-top);
   z-index: 50;
   backdrop-filter: blur(18px);
-  background: rgba(255, 255, 255, 0.86);
+  -webkit-backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.88);
   border-bottom: 1px solid var(--border-soft);
+  padding-top: var(--tg-header-pad);
+  /* ← вся магия здесь */
 }
 
 .pc-header-inner {
   max-width: 900px;
-  height: var(--header-height);
+  min-height: var(--header-height);
   margin: 0 auto;
-  padding: 0 14px;
+  padding: 0 14px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -185,6 +190,67 @@ img {
   color: var(--text-secondary);
 }
 
+/* ── Main ────────────────────────────────────────────────────────────────── */
+/*
+ * padding-top = header-pad + header-height + небольшой отступ
+ * Всё через CSS vars — ни одного inline-style из React.
+ */
+.pc-main {
+  min-height: var(--app-height);
+  padding-top: calc(var(--tg-header-pad) + var(--header-height) + 8px);
+  padding-bottom: calc(var(--nav-height) + 16px + var(--tg-content-safe-bottom));
+}
+
+/* ── Bottom nav ──────────────────────────────────────────────────────────── */
+.pc-bottom-nav {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(calc(100% - 20px), 420px);
+  bottom: max(8px, calc(var(--tg-content-safe-bottom) + 4px));
+  /* ← CSS var */
+  z-index: 60;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 8px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-lg);
+}
+
+.pc-bottom-nav-item {
+  min-height: 40px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--neutral-500);
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.pc-bottom-nav-item span {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.pc-bottom-nav-item.active {
+  background: linear-gradient(135deg, var(--green-500), var(--teal-500));
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.pc-bottom-nav-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* ── UI Atoms ────────────────────────────────────────────────────────────── */
 .pc-icon-button {
   width: 38px;
   height: 38px;
@@ -211,52 +277,7 @@ img {
   box-shadow: var(--shadow-md);
 }
 
-.pc-bottom-nav {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(calc(100% - 20px), 420px);
-  bottom: max(8px, var(--content-safe-bottom));
-  z-index: 60;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  padding: 8px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(18px);
-  box-shadow: var(--shadow-lg);
-}
-
-.pc-bottom-nav-item {
-  min-height: 40px;
-  border-radius: 14px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  color: var(--neutral-500);
-  transition: 0.18s ease;
-}
-
-.pc-bottom-nav-item span {
-  font-size: 10px;
-  font-weight: 600;
-  line-height: 1.1;
-}
-
-.pc-bottom-nav-item.active {
-  background: linear-gradient(135deg, var(--green-500), var(--teal-500));
-  color: white;
-  box-shadow: var(--shadow-md);
-}
-
-.pc-bottom-nav-icon {
-  font-size: 15px;
-  line-height: 1;
-}
-
+/* ── Page / Sections ─────────────────────────────────────────────────────── */
 .pc-page {
   max-width: 900px;
   margin: 0 auto;
@@ -286,6 +307,7 @@ img {
   font-weight: 700;
 }
 
+/* ── Hero ────────────────────────────────────────────────────────────────── */
 .pc-hero {
   position: relative;
   overflow: hidden;
@@ -338,6 +360,7 @@ img {
   font-weight: 800;
 }
 
+/* ── Scrollable row ──────────────────────────────────────────────────────── */
 .pc-horizontal-scroll {
   display: flex;
   gap: 10px;
@@ -368,6 +391,7 @@ img {
   color: var(--neutral-700);
 }
 
+/* ── Product grid ────────────────────────────────────────────────────────── */
 .pc-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -382,7 +406,7 @@ img {
 }
 
 .pc-card-image {
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1/1;
   background: var(--neutral-100);
 }
 
@@ -413,8 +437,12 @@ img {
   color: white;
   font-size: 13px;
   font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* ── Search ──────────────────────────────────────────────────────────────── */
 .pc-search-bar {
   display: flex;
   align-items: center;
@@ -433,10 +461,10 @@ img {
   color: var(--neutral-900);
 }
 
+/* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .pc-bottom-nav {
     width: calc(100% - 16px);
-    bottom: max(8px, var(--content-safe-bottom));
     padding: 7px;
     gap: 4px;
     border-radius: 18px;
@@ -458,7 +486,7 @@ img {
 
 @media (min-width: 768px) {
   .pc-main {
-    padding-bottom: calc(96px + var(--content-safe-bottom));
+    padding-bottom: calc(var(--nav-height) + 34px + var(--tg-content-safe-bottom));
   }
 
   .pc-page {
@@ -479,16 +507,7 @@ img {
   }
 }
 
-@supports (height: 100dvh) {
-
-  body,
-  .pc-app,
-  .pc-main {
-    min-height: var(--app-height);
-  }
-}
-
-/* Скрывает dev-бейдж Next.js внизу слева */
+/* Скрывает dev-бейдж Next.js */
 nextjs-portal {
   display: none !important;
 }

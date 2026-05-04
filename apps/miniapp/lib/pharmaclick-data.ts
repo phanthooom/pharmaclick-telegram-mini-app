@@ -1,112 +1,127 @@
 export type Category = {
-    id: string;
-    title: string;
-    icon: string;
-};
+    slug: string
+    name: string
+    icon: string
+}
 
 export type Product = {
-    id: string;
-    title: string;
-    price: string;
-    badge: string;
-    categoryId: string;
-    icon: string;
-    brand: string;
-    dosage?: string;
-    description: string;
-};
+    id: string
+    title: string
+    name: string
+    price: string
+    image: string
+    icon: string
+    badge: string
+    brand: string
+    dosage?: string
+    description: string
+}
 
-export const categories: Category[] = [
-    { id: "cosmetics", title: "Косметика", icon: "🧴" },
-    { id: "medicines", title: "Лекарства", icon: "💊" },
-    { id: "vitamins", title: "Витамины и БАДы", icon: "🍋" },
-    { id: "intimate", title: "Интимные средства", icon: "🩺" },
-    { id: "medical", title: "Медицинские изделия", icon: "🩹" },
-    { id: "ortho", title: "Ортопедия", icon: "🦴" },
-    { id: "mom-baby", title: "Мама и малыш", icon: "🍼" },
-    { id: "hygiene", title: "Гигиена", icon: "🪥" },
-    { id: "devices", title: "Медтехника", icon: "🩻" },
-    { id: "natural", title: "Натуральная косметика", icon: "🌿" },
-];
+export type QuickLink = {
+    title: string
+    subtitle: string
+    icon: string
+}
 
-export const homeCategoryChips = [
-    "Лекарства",
-    "Витамины",
-    "Красота",
-    "Интимные",
-];
+export const homeCategories: Category[] = [
+    { slug: 'pain', name: 'Обезболивающие', icon: '💊' },
+    { slug: 'vitamins', name: 'Витамины', icon: '🍊' },
+    { slug: 'cold', name: 'Простуда', icon: '🤒' },
+    { slug: 'kids', name: 'Детям', icon: '🧸' },
+    { slug: 'care', name: 'Уход', icon: '🧴' },
+]
 
 export const products: Product[] = [
     {
-        id: "paracetamol-500",
-        title: "Парацетамол 500 мг",
-        price: "15 000 сум",
-        badge: "OTC",
-        categoryId: "medicines",
-        icon: "💊",
-        brand: "PharmaClick",
-        dosage: "500 мг",
+        id: '1',
+        title: 'Парацетамол 500 мг',
+        name: 'Парацетамол 500 мг',
+        price: '18 000 сум',
+        image:
+            'https://images.pexels.com/photos/3683074/pexels-photo-3683074.jpeg?auto=compress&cs=tinysrgb&w=800',
+        icon: '💊',
+        badge: 'Хит продаж',
+        brand: 'PharmaClick',
+        dosage: '10 таблеток',
         description:
-            "Безрецептурный препарат для симптоматического облегчения боли и снижения температуры.",
+            'Эффективное средство для снижения температуры и облегчения боли. Подходит для домашней аптечки и повседневного использования по рекомендации врача.',
     },
     {
-        id: "vitamin-c-1000",
-        title: "Витамин C 1000",
-        price: "15 000 сум",
-        badge: "Популярное",
-        categoryId: "vitamins",
-        icon: "🍋",
-        brand: "VitaPlus",
-        dosage: "1000 мг",
+        id: '2',
+        title: 'Витамин C 1000 мг',
+        name: 'Витамин C 1000 мг',
+        price: '46 000 сум',
+        image:
+            'https://images.pexels.com/photos/3873141/pexels-photo-3873141.jpeg?auto=compress&cs=tinysrgb&w=800',
+        icon: '🍊',
+        badge: 'Иммунитет',
+        brand: 'VitaLine',
+        dosage: '20 шипучих таблеток',
         description:
-            "Ежедневная поддержка иммунитета и бодрости в удобном формате.",
+            'Высокая дозировка витамина C для поддержки иммунитета, тонуса и общего самочувствия. Удобный формат для ежедневного приема.',
     },
     {
-        id: "automatic-tonometer",
-        title: "Автоматический тонометр",
-        price: "450 000 сум",
-        badge: "Хит",
-        categoryId: "devices",
-        icon: "🩺",
-        brand: "MedCare",
+        id: '3',
+        title: 'Назальный спрей',
+        name: 'Назальный спрей',
+        price: '39 000 сум',
+        image:
+            'https://images.pexels.com/photos/7615574/pexels-photo-7615574.jpeg?auto=compress&cs=tinysrgb&w=800',
+        icon: '🌿',
+        badge: 'Для простуды',
+        brand: 'NasalCare',
+        dosage: '15 мл',
         description:
-            "Электронный тонометр для домашнего контроля давления, удобный и точный.",
+            'Спрей для облегчения носового дыхания и уменьшения заложенности. Подходит для использования при сезонной простуде и рините.',
     },
     {
-        id: "baby-cream",
-        title: "Детский крем Soft Baby",
-        price: "38 000 сум",
-        badge: "Мама и малыш",
-        categoryId: "mom-baby",
-        icon: "🍼",
-        brand: "SoftBaby",
+        id: '4',
+        title: 'Омега-3 комплекс',
+        name: 'Омега-3 комплекс',
+        price: '79 000 сум',
+        image:
+            'https://images.pexels.com/photos/5938244/pexels-photo-5938244.jpeg?auto=compress&cs=tinysrgb&w=800',
+        icon: '🧡',
+        badge: 'Здоровье сердца',
+        brand: 'OceanPlus',
+        dosage: '30 капсул',
         description:
-            "Мягкий ежедневный уход за чувствительной детской кожей.",
+            'Комплекс жирных кислот Омега-3 для поддержки сердечно-сосудистой системы, мозга и общего метаболического баланса.',
     },
-    {
-        id: "hydra-serum",
-        title: "Hydra Face Serum",
-        price: "129 000 сум",
-        badge: "Косметика",
-        categoryId: "cosmetics",
-        icon: "🧴",
-        brand: "DermaGlow",
-        description:
-            "Сыворотка для глубокого увлажнения, сияния и бархатистой текстуры кожи.",
-    },
-];
+]
 
-export const quickLinks = [
-    { title: "Филиалы", subtitle: "Ближайшие аптеки", icon: "📍" },
-    { title: "Лицензии", subtitle: "Сертификаты", icon: "📄" },
-    { title: "FAQ", subtitle: "Частые вопросы", icon: "❓" },
-    { title: "Помощь", subtitle: "Как оформить заказ", icon: "💬" },
-];
+export const homeFeaturedProducts = products.map((product) => ({
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    image: product.image,
+}))
 
-export function getProductById(id: string) {
-    return products.find((item) => item.id === id);
-}
+export const categories = homeCategories
 
-export function getProductsByCategory(categoryId: string) {
-    return products.filter((item) => item.categoryId === categoryId);
+export const quickLinks: QuickLink[] = [
+    {
+        title: 'Мои заказы',
+        subtitle: 'История и статусы',
+        icon: '📦',
+    },
+    {
+        title: 'Избранное',
+        subtitle: 'Сохранённые товары',
+        icon: '❤️',
+    },
+    {
+        title: 'Адреса',
+        subtitle: 'Доставка и самовывоз',
+        icon: '📍',
+    },
+    {
+        title: 'Поддержка',
+        subtitle: 'Помощь и консультация',
+        icon: '💬',
+    },
+]
+
+export function getProductById(id: string): Product | undefined {
+    return products.find((product) => product.id === id)
 }

@@ -24,6 +24,8 @@ export type TelegramWebApp = {
   setBackgroundColor?: (color: string) => void;
   colorScheme?: "light" | "dark";
   isFullscreen?: boolean;
+  viewportHeight?: number;
+  viewportStableHeight?: number;
   safeAreaInset?: Insets;
   contentSafeAreaInset?: Insets;
   initDataUnsafe?: {
@@ -60,10 +62,6 @@ export function initTelegramWebApp(): TelegramWebApp | null {
   tg.expand?.();
   tg.disableVerticalSwipes?.();
   tg.enableClosingConfirmation?.();
-
-  try {
-    tg.requestFullscreen?.();
-  } catch { }
 
   const root = document.documentElement;
   const theme = tg.themeParams ?? {};

@@ -7,16 +7,65 @@ function setCssVar(name: string, value: string) {
     document.documentElement.style.setProperty(name, value);
 }
 
+/** Pixels for older Telegram builds that do not report insets (space under Mini App title bar). */
+const TELEGRAM_LEGACY_TOP_INSET_PX = 56;
+
 function applyFallbackViewport() {
-    setCssVar("--app-height", `${window.innerHeight}px`);
-    setCssVar("--safe-top", "0px");
-    setCssVar("--safe-right", "0px");
-    setCssVar("--safe-bottom", "0px");
-    setCssVar("--safe-left", "0px");
-    setCssVar("--content-safe-top", "0px");
-    setCssVar("--content-safe-right", "0px");
-    setCssVar("--content-safe-bottom", "0px");
-    setCssVar("--content-safe-left", "0px");
+    const h = `${window.innerHeight}px`;
+    const envTop = "env(safe-area-inset-top, 0px)";
+    const envRight = "env(safe-area-inset-right, 0px)";
+    const envBottom = "env(safe-area-inset-bottom, 0px)";
+    const envLeft = "env(safe-area-inset-left, 0px)";
+
+    setCssVar("--app-height", h);
+    setCssVar("--tg-safe-top", envTop);
+    setCssVar("--tg-safe-right", envRight);
+    setCssVar("--tg-safe-bottom", envBottom);
+    setCssVar("--tg-safe-left", envLeft);
+    setCssVar("--tg-content-safe-top", envTop);
+    setCssVar("--tg-content-safe-right", envRight);
+    setCssVar("--tg-content-safe-bottom", envBottom);
+    setCssVar("--tg-content-safe-left", envLeft);
+    setCssVar("--tg-header-pad", envTop);
+}
+
+function applyTelegramInsets(tg: {
+    safeAreaInset?: { top?: number; right?: number; bottom?: number; left?: number };
+    contentSafeAreaInset?: { top?: number; right?: number; bottom?: number; left?: number };
+    viewportStableHeight?: number;
+    viewportHeight?: number;
+    isFullscreen?: boolean;
+}) {
+    const safe = tg.safeAreaInset ?? { top: 0, right: 0, bottom: 0, left: 0 };
+    const content = tg.contentSafeAreaInset ?? { top: 0, right: 0, bottom: 0, left: 0 };
+
+    const stableHeight =
+        tg.viewportStableHeight ?? tg.viewportHeight ?? window.innerHeight;
+
+    const px = (n: number | undefined) => `${Math.max(0, Number(n ?? 0))}px`;
+
+    const cTop = Math.max(Number(content.top ?? 0), Number(safe.top ?? 0));
+    const cRight = Math.max(Number(content.right ?? 0), Number(safe.right ?? 0));
+    const cBottom = Math.max(Number(content.bottom ?? 0), Number(safe.bottom ?? 0));
+    const cLeft = Math.max(Number(content.left ?? 0), Number(safe.left ?? 0));
+
+    const inFullscreen = Boolean(tg.isFullscreen);
+    const headerPadPx =
+        cTop > 0 ? cTop : !inFullscreen ? TELEGRAM_LEGACY_TOP_INSET_PX : 0;
+
+    setCssVar("--app-height", `${Math.max(1, stableHeight)}px`);
+
+    setCssVar("--tg-safe-top", px(safe.top));
+    setCssVar("--tg-safe-right", px(safe.right));
+    setCssVar("--tg-safe-bottom", px(safe.bottom));
+    setCssVar("--tg-safe-left", px(safe.left));
+
+    setCssVar("--tg-content-safe-top", `${cTop}px`);
+    setCssVar("--tg-content-safe-right", `${cRight}px`);
+    setCssVar("--tg-content-safe-bottom", `${cBottom}px`);
+    setCssVar("--tg-content-safe-left", `${cLeft}px`);
+
+    setCssVar("--tg-header-pad", `${headerPadPx}px`);
 }
 
 export function TelegramProvider() {
@@ -32,52 +81,27 @@ export function TelegramProvider() {
         }
 
         const applyInsetsAndViewport = () => {
-            const safe = tg.safeAreaInset ?? { top: 0, right: 0, bottom: 0, left: 0 };
-            const content = tg.contentSafeAreaInset ?? safe;
-            const stableHeight =
-                tg.viewportStableHeight ?? tg.viewportHeight ?? window.innerHeight;
-
-            setCssVar("--app-height", `${stableHeight}px`);
-
-            setCssVar("--safe-top", `${safe.top ?? 0}px`);
-            setCssVar("--safe-right", `${safe.right ?? 0}px`);
-            setCssVar("--safe-bottom", `${safe.bottom ?? 0}px`);
-            setCssVar("--safe-left", `${safe.left ?? 0}px`);
-
-            setCssVar("--content-safe-top", `${content.top ?? 0}px`);
-            setCssVar("--content-safe-right", `${content.right ?? 0}px`);
-            setCssVar("--content-safe-bottom", `${content.bottom ?? 0}px`);
-            setCssVar("--content-safe-left", `${content.left ?? 0}px`);
+            applyTelegramInsets(tg);
         };
 
         const onViewportChanged = () => {
             applyInsetsAndViewport();
-            console.log("[TG] viewportChanged", {
-                viewportHeight: tg.viewportHeight,
-                viewportStableHeight: tg.viewportStableHeight,
-                isFullscreen: tg.isFullscreen,
-            });
         };
 
         const onSafeAreaChanged = () => {
             applyInsetsAndViewport();
-            console.log("[TG] safeAreaChanged", tg.safeAreaInset);
         };
 
         const onContentSafeAreaChanged = () => {
             applyInsetsAndViewport();
-            console.log("[TG] contentSafeAreaChanged", tg.contentSafeAreaInset);
         };
 
         const onFullscreenChanged = () => {
             applyInsetsAndViewport();
-            console.log("[TG] fullscreenChanged", {
-                isFullscreen: tg.isFullscreen,
-            });
         };
 
-        const onFullscreenFailed = (...args: any[]) => {
-            console.log("[TG] fullscreenFailed", args);
+        const onFullscreenFailed = () => {
+            applyInsetsAndViewport();
         };
 
         const onResize = () => {
@@ -85,20 +109,15 @@ export function TelegramProvider() {
         };
 
         try {
-            tg.ready?.();
-            tg.expand?.();
-            tg.disableVerticalSwipes?.();
-
-            try {
-                tg.requestFullscreen?.();
-            } catch (e) {
-                console.log("[TG] requestFullscreen error", e);
-            }
-        } catch (e) {
-            console.log("[TG] init error", e);
+            tg.requestFullscreen?.();
+        } catch {
+            /* older clients */
         }
 
         applyInsetsAndViewport();
+        requestAnimationFrame(() => {
+            applyInsetsAndViewport();
+        });
 
         tg.onEvent?.("viewportChanged", onViewportChanged);
         tg.onEvent?.("safeAreaChanged", onSafeAreaChanged);
