@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ensureTelegramViewport, initTelegramWebApp } from "../lib/telegram";
 
 function setCssVar(name: string, value: string) {
@@ -72,16 +72,24 @@ function applyTelegramInsets(tg: {
 }
 
 export function TelegramProvider() {
+    const [debug, setDebug] = useState<string | null>(null);
+
     useEffect(() => {
         const tg = initTelegramWebApp() as any;
 
         if (!tg) {
             applyFallbackViewport();
+            setDebug("no WebApp");
             window.addEventListener("resize", applyFallbackViewport);
             return () => {
                 window.removeEventListener("resize", applyFallbackViewport);
             };
         }
+
+        const buildDebug = () =>
+            `fs=${tg.isFullscreen} exp=${tg.isExpanded} hasFS=${typeof tg.requestFullscreen} h=${tg.viewportStableHeight ?? tg.viewportHeight}`;
+
+        setDebug(buildDebug());
 
         const applyInsetsAndViewport = () => {
             applyTelegramInsets(tg);
@@ -104,10 +112,13 @@ export function TelegramProvider() {
 
         const onFullscreenChanged = () => {
             applyInsetsAndViewport();
+            setDebug(buildDebug());
         };
 
-        const onFullscreenFailed = () => {
+        const onFullscreenFailed = (e: unknown) => {
             applyInsetsAndViewport();
+            const reason = (e as any)?.reason ?? "unknown";
+            setDebug(`FAILED: ${reason} | ${buildDebug()}`);
         };
 
         const onResize = () => {
@@ -149,5 +160,15 @@ export function TelegramProvider() {
         };
     }, []);
 
-    return null;
+    if (!debug) return null;
+    return (
+        <div style={{
+            position: "fixed", bottom: 80, left: 8, right: 8, zIndex: 9999,
+            background: "rgba(0,0,0,0.82)", color: "#0f0", fontSize: 11,
+            fontFamily: "monospace", padding: "6px 8px", borderRadius: 8,
+            wordBreak: "break-all", pointerEvents: "none",
+        }}>
+            {debug}
+        </div>
+    );
 }
