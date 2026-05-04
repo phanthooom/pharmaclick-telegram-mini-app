@@ -7,8 +7,8 @@ function setCssVar(name: string, value: string) {
     document.documentElement.style.setProperty(name, value);
 }
 
-/** Pixels for older Telegram builds that do not report insets (space under Mini App title bar). */
-const TELEGRAM_LEGACY_TOP_INSET_PX = 56;
+/** Same fallback as croissant mini-app shell (~Telegram header overdraw when insets are 0). */
+const TELEGRAM_LEGACY_TOP_INSET_PX = 72;
 
 function applyFallbackViewport() {
     const h = `${window.innerHeight}px`;
@@ -119,8 +119,7 @@ export function TelegramProvider() {
             ensureTelegramViewport(tg);
             applyInsetsAndViewport();
         });
-        const expandDelays = [50, 150, 400, 800] as const;
-        const expandTimers = expandDelays.map((ms) =>
+        const expandTimers = [120, 400].map((ms) =>
             window.setTimeout(() => {
                 ensureTelegramViewport(tg);
                 applyInsetsAndViewport();

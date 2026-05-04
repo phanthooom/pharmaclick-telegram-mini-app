@@ -56,7 +56,10 @@ export function isTelegramEnvironment() {
   return Boolean(getTelegramWebApp());
 }
 
-/** Expand + optional fullscreen; safe to call many times. */
+/**
+ * Re-apply expanded + fullscreen (e.g. after viewport changes).
+ * Same sequence as croissant-delivery-bot mini-app shell; do not call ready() here.
+ */
 export function ensureTelegramViewport(tg: TelegramWebApp | null | undefined) {
   if (!tg) return;
   try {
@@ -71,15 +74,24 @@ export function ensureTelegramViewport(tg: TelegramWebApp | null | undefined) {
   }
 }
 
+/** Matches phanthooom/croissant-delivery-bot: ready → expand → requestFullscreen → disable swipes. */
 export function initTelegramWebApp(): TelegramWebApp | null {
   const tg = getTelegramWebApp();
   if (!tg) return null;
 
-  // expand() must run before ready() so Telegram opens the sheet at max height first
-  ensureTelegramViewport(tg);
+  tg.ready?.();
+  try {
+    tg.expand?.();
+  } catch {
+    /* noop */
+  }
+  try {
+    tg.requestFullscreen?.();
+  } catch {
+    /* noop */
+  }
   tg.disableVerticalSwipes?.();
   tg.enableClosingConfirmation?.();
-  tg.ready?.();
 
   const root = document.documentElement;
   const theme = tg.themeParams ?? {};
