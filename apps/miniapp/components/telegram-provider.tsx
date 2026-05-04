@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ensureTelegramViewport, initTelegramWebApp } from "../lib/telegram";
 
 function setCssVar(name: string, value: string) {
@@ -52,8 +52,7 @@ function applyTelegramInsets(tg: {
     // Mirror croissant reference: Math.max(safeTop, 72) — always at least 72px inside Telegram.
     // In expanded (non-fullscreen) mode contentSafeAreaInset.top is 0, so the 72px floor covers
     // the Telegram "X Close" bar. In fullscreen mode the value is the actual overlay height (~55-70px)
-    // and max() ensures we never go below 72. Removing the inFullscreen branch avoids a bug where
-    // fullscreen + zero inset (old clients) would set the header padding to 0.
+    // and max() ensures we never go below 72.
     const headerPadPx = Math.max(cTop, TELEGRAM_LEGACY_TOP_INSET_PX);
 
     setCssVar("--app-height", `${Math.max(1, stableHeight)}px`);
@@ -72,24 +71,16 @@ function applyTelegramInsets(tg: {
 }
 
 export function TelegramProvider() {
-    const [debug, setDebug] = useState<string | null>(null);
-
     useEffect(() => {
         const tg = initTelegramWebApp() as any;
 
         if (!tg) {
             applyFallbackViewport();
-            setDebug("no WebApp");
             window.addEventListener("resize", applyFallbackViewport);
             return () => {
                 window.removeEventListener("resize", applyFallbackViewport);
             };
         }
-
-        const buildDebug = () =>
-            `fs=${tg.isFullscreen} exp=${tg.isExpanded} hasFS=${typeof tg.requestFullscreen} h=${tg.viewportStableHeight ?? tg.viewportHeight}`;
-
-        setDebug(buildDebug());
 
         const applyInsetsAndViewport = () => {
             applyTelegramInsets(tg);
@@ -102,73 +93,47 @@ export function TelegramProvider() {
             applyInsetsAndViewport();
         };
 
-        const onSafeAreaChanged = () => {
-            applyInsetsAndViewport();
-        };
-
-        const onContentSafeAreaChanged = () => {
-            applyInsetsAndViewport();
-        };
-
         const onFullscreenChanged = () => {
             applyInsetsAndViewport();
-            setDebug(buildDebug());
-        };
-
-        const onFullscreenFailed = (e: unknown) => {
-            applyInsetsAndViewport();
-            const reason = (e as any)?.reason ?? "unknown";
-            setDebug(`FAILED: ${reason} | ${buildDebug()}`);
         };
 
         const onResize = () => {
-            ensureTelegramViewport(tg);
+            // Only retry if not yet expanded/fullscreen to avoid ALREADY_FULLSCREEN errors.
+            if (!tg.isExpanded || !tg.isFullscreen) {
+                ensureTelegramViewport(tg);
+            }
             applyInsetsAndViewport();
         };
 
-        ensureTelegramViewport(tg);
-
         applyInsetsAndViewport();
-        requestAnimationFrame(() => {
-            ensureTelegramViewport(tg);
-            applyInsetsAndViewport();
-        });
-        const expandTimers = [120, 400].map((ms) =>
-            window.setTimeout(() => {
+
+        // One rAF pass to pick up insets after first paint.
+        requestAnimationFrame(applyInsetsAndViewport);
+
+        // Single retry at 400ms in case Telegram delivers insets late.
+        const retryTimer = window.setTimeout(() => {
+            if (!tg.isExpanded || !tg.isFullscreen) {
                 ensureTelegramViewport(tg);
-                applyInsetsAndViewport();
-            }, ms),
-        );
+            }
+            applyInsetsAndViewport();
+        }, 400);
 
         tg.onEvent?.("viewportChanged", onViewportChanged);
-        tg.onEvent?.("safeAreaChanged", onSafeAreaChanged);
-        tg.onEvent?.("contentSafeAreaChanged", onContentSafeAreaChanged);
+        tg.onEvent?.("safeAreaChanged", applyInsetsAndViewport);
+        tg.onEvent?.("contentSafeAreaChanged", applyInsetsAndViewport);
         tg.onEvent?.("fullscreenChanged", onFullscreenChanged);
-        tg.onEvent?.("fullscreenFailed", onFullscreenFailed);
 
         window.addEventListener("resize", onResize);
 
         return () => {
-            expandTimers.forEach((id) => clearTimeout(id));
+            clearTimeout(retryTimer);
             tg.offEvent?.("viewportChanged", onViewportChanged);
-            tg.offEvent?.("safeAreaChanged", onSafeAreaChanged);
-            tg.offEvent?.("contentSafeAreaChanged", onContentSafeAreaChanged);
+            tg.offEvent?.("safeAreaChanged", applyInsetsAndViewport);
+            tg.offEvent?.("contentSafeAreaChanged", applyInsetsAndViewport);
             tg.offEvent?.("fullscreenChanged", onFullscreenChanged);
-            tg.offEvent?.("fullscreenFailed", onFullscreenFailed);
-
             window.removeEventListener("resize", onResize);
         };
     }, []);
 
-    if (!debug) return null;
-    return (
-        <div style={{
-            position: "fixed", bottom: 80, left: 8, right: 8, zIndex: 9999,
-            background: "rgba(0,0,0,0.82)", color: "#0f0", fontSize: 11,
-            fontFamily: "monospace", padding: "6px 8px", borderRadius: 8,
-            wordBreak: "break-all", pointerEvents: "none",
-        }}>
-            {debug}
-        </div>
-    );
+    return null;
 }
