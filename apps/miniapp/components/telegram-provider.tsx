@@ -98,10 +98,8 @@ export function TelegramProvider() {
         };
 
         const onResize = () => {
-            // Only retry if not yet expanded/fullscreen to avoid ALREADY_FULLSCREEN errors.
-            if (!tg.isExpanded || !tg.isFullscreen) {
-                ensureTelegramViewport(tg);
-            }
+            // Resize events fire often (keyboard, scroll quirks). Only update CSS —
+            // do not hammer expand/requestFullscreen here; viewportChanged handles that.
             applyInsetsAndViewport();
         };
 
@@ -112,7 +110,7 @@ export function TelegramProvider() {
 
         // Single retry at 400ms in case Telegram delivers insets late.
         const retryTimer = window.setTimeout(() => {
-            if (!tg.isExpanded || !tg.isFullscreen) {
+            if (tg.isExpanded !== true) {
                 ensureTelegramViewport(tg);
             }
             applyInsetsAndViewport();

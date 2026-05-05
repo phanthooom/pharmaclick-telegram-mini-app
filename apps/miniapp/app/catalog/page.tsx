@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ProductCardImage } from '../../components/product-card-image'
 import { homeCategories, homeFeaturedProducts } from '../../lib/pharmaclick-data'
 
 export default function CatalogPage() {
@@ -52,17 +53,17 @@ export default function CatalogPage() {
                 </div>
 
                 <div className="pc-grid">
-                    {homeFeaturedProducts.map((product) => (
+                    {homeFeaturedProducts.map((product, index) => (
                         <Link
                             key={product.id}
                             href={`/product/${product.id}`}
                             className="pc-card"
                         >
                             <div className="pc-card-image">
-                                <img
+                                <ProductCardImage
                                     src={product.image}
                                     alt={product.name}
-                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    priority={index < 2}
                                 />
                             </div>
 

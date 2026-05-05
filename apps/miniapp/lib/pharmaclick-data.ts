@@ -38,7 +38,7 @@ export const products: Product[] = [
         name: 'Парацетамол 500 мг',
         price: '18 000 сум',
         image:
-            'https://images.pexels.com/photos/3683074/pexels-photo-3683074.jpeg?auto=compress&cs=tinysrgb&w=800',
+            'https://images.pexels.com/photos/3683074/pexels-photo-3683074.jpeg?auto=compress&cs=tinysrgb&w=480&q=75',
         icon: '💊',
         badge: 'Хит продаж',
         brand: 'PharmaClick',
@@ -52,7 +52,7 @@ export const products: Product[] = [
         name: 'Витамин C 1000 мг',
         price: '46 000 сум',
         image:
-            'https://images.pexels.com/photos/3873141/pexels-photo-3873141.jpeg?auto=compress&cs=tinysrgb&w=800',
+            'https://images.pexels.com/photos/3873141/pexels-photo-3873141.jpeg?auto=compress&cs=tinysrgb&w=480&q=75',
         icon: '🍊',
         badge: 'Иммунитет',
         brand: 'VitaLine',
@@ -66,7 +66,7 @@ export const products: Product[] = [
         name: 'Назальный спрей',
         price: '39 000 сум',
         image:
-            'https://images.pexels.com/photos/7615574/pexels-photo-7615574.jpeg?auto=compress&cs=tinysrgb&w=800',
+            'https://images.pexels.com/photos/7615574/pexels-photo-7615574.jpeg?auto=compress&cs=tinysrgb&w=480&q=75',
         icon: '🌿',
         badge: 'Для простуды',
         brand: 'NasalCare',
@@ -80,7 +80,7 @@ export const products: Product[] = [
         name: 'Омега-3 комплекс',
         price: '79 000 сум',
         image:
-            'https://images.pexels.com/photos/5938244/pexels-photo-5938244.jpeg?auto=compress&cs=tinysrgb&w=800',
+            'https://images.pexels.com/photos/5938244/pexels-photo-5938244.jpeg?auto=compress&cs=tinysrgb&w=480&q=75',
         icon: '🧡',
         badge: 'Здоровье сердца',
         brand: 'OceanPlus',
