@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { ArrowLeftIcon, CartIcon, GridIcon, HomeIcon, SearchIcon, UserIcon } from './ui-icons'
 
 const PAGE_TITLES: Record<string, string> = {
     '/': 'PharmaClick',
@@ -25,10 +26,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             : PAGE_TITLES[pathname] ?? 'PharmaClick'
 
     const navItems = [
-        { href: '/', label: 'Главная', icon: '⌂' },
-        { href: '/catalog', label: 'Каталог', icon: '⌕' },
-        { href: '/cart', label: 'Корзина', icon: '🛒' },
-        { href: '/profile', label: 'Профиль', icon: '◉' },
+        { href: '/', label: 'Главная', icon: HomeIcon },
+        { href: '/catalog', label: 'Каталог', icon: GridIcon },
+        { href: '/cart', label: 'Корзина', icon: CartIcon },
+        { href: '/profile', label: 'Профиль', icon: UserIcon },
     ]
 
     return (
@@ -43,7 +44,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                                 className="pc-icon-button"
                                 aria-label="Назад"
                             >
-                                ←
+                                <ArrowLeftIcon width={18} height={18} />
                             </button>
                         ) : (
                             <div className="pc-logo-pill">PC</div>
@@ -59,7 +60,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
                     <div className="pc-header-right">
                         <Link href="/catalog" className="pc-icon-button" aria-label="Поиск">
-                            ⌕
+                            <SearchIcon width={18} height={18} />
                         </Link>
                     </div>
                 </div>
@@ -70,7 +71,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </main>
 
             <nav className="pc-bottom-nav">
-                {navItems.map(({ href, label, icon }) => {
+                {navItems.map(({ href, label, icon: Icon }) => {
                     const active =
                         pathname === href || (href !== '/' && pathname.startsWith(href))
 
@@ -80,7 +81,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                             href={href}
                             className={`pc-bottom-nav-item ${active ? 'active' : ''}`}
                         >
-                            <span className="pc-bottom-nav-icon">{icon}</span>
+                            <span className="pc-bottom-nav-icon">
+                                <Icon width={16} height={16} />
+                            </span>
                             <span>{label}</span>
                         </Link>
                     )

@@ -1,6 +1,15 @@
 import Link from 'next/link'
 import { ProductCardImage } from '../components/product-card-image'
+import { BabyIcon, LeafIcon, PillIcon, PlusCircleIcon, SparkleIcon } from '../components/ui-icons'
 import { homeCategories, homeFeaturedProducts } from '../lib/pharmaclick-data'
+
+const categoryIcons = {
+  pill: PillIcon,
+  leaf: LeafIcon,
+  plus: PlusCircleIcon,
+  baby: BabyIcon,
+  sparkle: SparkleIcon,
+} as const
 
 export default function HomePage() {
   return (
@@ -29,7 +38,9 @@ export default function HomePage() {
         <div className="pc-horizontal-scroll">
           <div className="pc-badge-card">
             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-              <div className="pc-logo-pill" style={{ width: 36, height: 36 }}>✓</div>
+              <div className="pc-logo-pill" style={{ width: 36, height: 36 }}>
+                <SparkleIcon width={16} height={16} />
+              </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 800 }}>Оригиналы</div>
                 <div style={{ fontSize: 11, color: 'var(--neutral-500)' }}>
@@ -41,7 +52,9 @@ export default function HomePage() {
 
           <div className="pc-badge-card">
             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-              <div className="pc-logo-pill" style={{ width: 36, height: 36 }}>⏱</div>
+              <div className="pc-logo-pill" style={{ width: 36, height: 36 }}>
+                <PlusCircleIcon width={16} height={16} />
+              </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 800 }}>30 минут</div>
                 <div style={{ fontSize: 11, color: 'var(--neutral-500)' }}>
@@ -53,7 +66,9 @@ export default function HomePage() {
 
           <div className="pc-badge-card">
             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-              <div className="pc-logo-pill" style={{ width: 36, height: 36 }}>🛡</div>
+              <div className="pc-logo-pill" style={{ width: 36, height: 36 }}>
+                <PillIcon width={16} height={16} />
+              </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 800 }}>Лицензия</div>
                 <div style={{ fontSize: 11, color: 'var(--neutral-500)' }}>
@@ -72,15 +87,21 @@ export default function HomePage() {
         </div>
 
         <div className="pc-horizontal-scroll">
-          {homeCategories.map((category) => (
-            <Link
-              key={category.slug}
-              href={`/catalog?category=${category.slug}`}
-              className="pc-category-chip"
-            >
-              {category.icon} {category.name}
-            </Link>
-          ))}
+          {homeCategories.map((category) => {
+            const Icon = categoryIcons[category.icon]
+            return (
+              <Link
+                key={category.slug}
+                href={`/catalog?category=${category.slug}`}
+                className="pc-category-chip"
+              >
+                <span style={{ display: 'inline-flex', verticalAlign: 'middle', marginRight: 6 }}>
+                  <Icon width={14} height={14} />
+                </span>
+                {category.name}
+              </Link>
+            )
+          })}
         </div>
       </section>
 

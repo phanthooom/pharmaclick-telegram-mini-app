@@ -1,7 +1,15 @@
 import { BottomNav } from "../../components/bottom-nav";
+import { HeartIcon, MessageIcon, PackageIcon, PinIcon } from "../../components/ui-icons";
 import { quickLinks } from "../../lib/pharmaclick-data";
 
 export default function ProfilePage() {
+    const quickLinkIcons = {
+        orders: PackageIcon,
+        favorites: HeartIcon,
+        address: PinIcon,
+        support: MessageIcon,
+    } as const;
+
     return (
         <main className="pc-shell">
             <div className="pc-frame pc-browser-frame">
@@ -50,15 +58,18 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
-                        {quickLinks.map((item) => (
+                        {quickLinks.map((item) => {
+                            const Icon = quickLinkIcons[item.icon];
+                            return (
                             <button key={item.title} className="pc-card-strong rounded-[24px] p-4 text-left">
-                                <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-[16px] bg-[var(--brand-primary-soft)] text-2xl">
-                                    {item.icon}
+                                <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-[16px] bg-[var(--brand-primary-soft)] text-[var(--brand-primary-strong)]">
+                                    <Icon width={22} height={22} />
                                 </div>
                                 <div className="text-[18px] font-semibold">{item.title}</div>
                                 <div className="mt-1 text-sm text-[var(--text-secondary)]">{item.subtitle}</div>
                             </button>
-                        ))}
+                            );
+                        })}
                     </div>
                 </section>
 

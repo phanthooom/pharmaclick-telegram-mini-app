@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { CartIcon, GridIcon, HomeIcon, UserIcon } from "./ui-icons";
 
 const navItems = [
-    { href: "/", label: "Главная", icon: "🏠" },
-    { href: "/catalog", label: "Каталог", icon: "📚" },
-    { href: "/cart", label: "Корзина", icon: "🛒" },
-    { href: "/profile", label: "Профиль", icon: "👤" },
+    { href: "/", label: "Главная", icon: HomeIcon },
+    { href: "/catalog", label: "Каталог", icon: GridIcon },
+    { href: "/cart", label: "Корзина", icon: CartIcon },
+    { href: "/profile", label: "Профиль", icon: UserIcon },
 ];
 
 export function BottomNav() {
@@ -17,6 +18,7 @@ export function BottomNav() {
         <nav className="pc-bottom-nav fixed bottom-0 left-0 right-0 z-30">
             <div className="grid grid-cols-4 gap-2">
                 {navItems.map((item) => {
+                    const Icon = item.icon;
                     const active =
                         item.href === "/"
                             ? pathname === "/"
@@ -31,7 +33,9 @@ export function BottomNav() {
                                     : "text-[var(--text-secondary)]"
                                 }`}
                         >
-                            <span className="text-[28px] leading-none">{item.icon}</span>
+                            <span className="text-[28px] leading-none">
+                                <Icon width={22} height={22} />
+                            </span>
                             <span>{item.label}</span>
                         </Link>
                     );

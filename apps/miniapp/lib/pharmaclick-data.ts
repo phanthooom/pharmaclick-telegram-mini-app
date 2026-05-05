@@ -1,7 +1,7 @@
 export type Category = {
     slug: string
     name: string
-    icon: string
+    icon: 'pill' | 'leaf' | 'plus' | 'baby' | 'sparkle'
 }
 
 export type Product = {
@@ -10,7 +10,7 @@ export type Product = {
     name: string
     price: string
     image: string
-    icon: string
+    icon: 'pill' | 'leaf' | 'plus' | 'sparkle'
     badge: string
     brand: string
     dosage?: string
@@ -20,15 +20,15 @@ export type Product = {
 export type QuickLink = {
     title: string
     subtitle: string
-    icon: string
+    icon: 'orders' | 'favorites' | 'address' | 'support'
 }
 
 export const homeCategories: Category[] = [
-    { slug: 'pain', name: 'Обезболивающие', icon: '💊' },
-    { slug: 'vitamins', name: 'Витамины', icon: '🍊' },
-    { slug: 'cold', name: 'Простуда', icon: '🤒' },
-    { slug: 'kids', name: 'Детям', icon: '🧸' },
-    { slug: 'care', name: 'Уход', icon: '🧴' },
+    { slug: 'pain', name: 'Обезболивающие', icon: 'pill' },
+    { slug: 'vitamins', name: 'Витамины', icon: 'leaf' },
+    { slug: 'cold', name: 'Простуда', icon: 'plus' },
+    { slug: 'kids', name: 'Детям', icon: 'baby' },
+    { slug: 'care', name: 'Уход', icon: 'sparkle' },
 ]
 
 export const products: Product[] = [
@@ -39,7 +39,7 @@ export const products: Product[] = [
         price: '18 000 сум',
         image:
             'https://images.pexels.com/photos/3683074/pexels-photo-3683074.jpeg?auto=compress&cs=tinysrgb&w=480&q=75',
-        icon: '💊',
+        icon: 'pill',
         badge: 'Хит продаж',
         brand: 'PharmaClick',
         dosage: '10 таблеток',
@@ -53,7 +53,7 @@ export const products: Product[] = [
         price: '46 000 сум',
         image:
             'https://images.pexels.com/photos/3873141/pexels-photo-3873141.jpeg?auto=compress&cs=tinysrgb&w=480&q=75',
-        icon: '🍊',
+        icon: 'leaf',
         badge: 'Иммунитет',
         brand: 'VitaLine',
         dosage: '20 шипучих таблеток',
@@ -67,7 +67,7 @@ export const products: Product[] = [
         price: '39 000 сум',
         image:
             'https://images.pexels.com/photos/7615574/pexels-photo-7615574.jpeg?auto=compress&cs=tinysrgb&w=480&q=75',
-        icon: '🌿',
+        icon: 'plus',
         badge: 'Для простуды',
         brand: 'NasalCare',
         dosage: '15 мл',
@@ -81,7 +81,7 @@ export const products: Product[] = [
         price: '79 000 сум',
         image:
             'https://images.pexels.com/photos/5938244/pexels-photo-5938244.jpeg?auto=compress&cs=tinysrgb&w=480&q=75',
-        icon: '🧡',
+        icon: 'sparkle',
         badge: 'Здоровье сердца',
         brand: 'OceanPlus',
         dosage: '30 капсул',
@@ -103,22 +103,22 @@ export const quickLinks: QuickLink[] = [
     {
         title: 'Мои заказы',
         subtitle: 'История и статусы',
-        icon: '📦',
+        icon: 'orders',
     },
     {
         title: 'Избранное',
         subtitle: 'Сохранённые товары',
-        icon: '❤️',
+        icon: 'favorites',
     },
     {
         title: 'Адреса',
         subtitle: 'Доставка и самовывоз',
-        icon: '📍',
+        icon: 'address',
     },
     {
         title: 'Поддержка',
         subtitle: 'Помощь и консультация',
-        icon: '💬',
+        icon: 'support',
     },
 ]
 

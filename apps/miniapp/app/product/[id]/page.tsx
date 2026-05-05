@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BottomNav } from "../../../components/bottom-nav";
+import { LeafIcon, PillIcon, PlusCircleIcon, SparkleIcon } from "../../../components/ui-icons";
 import { getProductById } from "../../../lib/pharmaclick-data";
 
 type ProductPageProps = {
@@ -12,6 +13,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
     const product = getProductById(id);
 
     if (!product) notFound();
+    const productIconMap = {
+        pill: PillIcon,
+        leaf: LeafIcon,
+        plus: PlusCircleIcon,
+        sparkle: SparkleIcon,
+    } as const;
+    const ProductIcon = productIconMap[product.icon];
 
     return (
         <main className="pc-shell">
@@ -49,7 +57,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <section className="pc-section-padding px-4 pt-4">
                     <div className="pc-card-strong rounded-[30px] p-4">
                         <div className="pc-soft-icon flex h-44 items-center justify-center rounded-[26px] text-7xl">
-                            {product.icon}
+                            <ProductIcon width={56} height={56} />
                         </div>
 
                         <div className="mt-4 flex items-start justify-between gap-3">
