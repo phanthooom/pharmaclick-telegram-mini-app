@@ -1,98 +1,103 @@
-import { BottomNav } from "../../components/bottom-nav";
-import { HeartIcon, MessageIcon, PackageIcon, PinIcon } from "../../components/ui-icons";
-import { quickLinks } from "../../lib/pharmaclick-data";
+import Link from "next/link";
+import {
+    HeartIcon,
+    PhoneIcon,
+    PinIcon,
+    ShieldCheckIcon,
+    TagIcon,
+    TruckIcon,
+    UserIcon,
+} from "../../components/ui-icons";
+
+const aboutItems = [
+    { Icon: ShieldCheckIcon, title: "Лицензированная аптека", subtitle: "Все препараты сертифицированы" },
+    { Icon: TruckIcon, title: "Быстрая доставка", subtitle: "Доставка за 30–60 минут" },
+    { Icon: TagIcon, title: "Честные цены", subtitle: "Цены как в обычной аптеке" },
+];
+
+const userFields = [
+    { Icon: UserIcon, label: "Имя", value: "Санжар" },
+    { Icon: PhoneIcon, label: "Телефон", value: "+998997878778" },
+    { Icon: PinIcon, label: "Адрес", value: "Ададавл" },
+];
 
 export default function ProfilePage() {
-    const quickLinkIcons = {
-        orders: PackageIcon,
-        favorites: HeartIcon,
-        address: PinIcon,
-        support: MessageIcon,
-    } as const;
-
     return (
-        <main className="pc-shell">
-            <div className="pc-frame pc-browser-frame">
-                <header
-                    className="pc-glass sticky top-0 z-20 border-b border-[var(--border-soft)]"
-                    style={{
-                        paddingTop: "calc(var(--content-safe-top) + 18px)",
-                        paddingBottom: "14px",
-                        paddingLeft: "max(16px, var(--content-safe-left))",
-                        paddingRight: "max(16px, var(--content-safe-right))",
-                    }}
-                >
-                    <div className="mb-3 flex items-center justify-between gap-3">
+        <div className="pc-page" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+
+            {/* Личные данные */}
+            <section style={{ background: "white", borderRadius: 24, boxShadow: "var(--shadow-sm)", overflow: "hidden" }}>
+                <div style={{
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                    padding: "16px", borderBottom: "1px solid var(--border-soft)",
+                }}>
+                    <span style={{ fontSize: 18, fontWeight: 800 }}>Личные данные</span>
+                    <button style={{ display: "flex", alignItems: "center", gap: 6, color: "var(--brand-primary)", fontSize: 14, fontWeight: 700 }}>
+                        Изменить
+                    </button>
+                </div>
+                {userFields.map(({ Icon, label, value }, i) => (
+                    <div key={label} style={{
+                        display: "flex", alignItems: "center", gap: 14,
+                        padding: "13px 16px",
+                        borderBottom: i < userFields.length - 1 ? "1px solid var(--border-soft)" : "none",
+                    }}>
+                        <Icon width={20} height={20} style={{ color: "var(--neutral-400)", flexShrink: 0 }} />
                         <div>
-                            <div className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--brand-primary)]">
-                                PharmaClick
-                            </div>
-                            <h1 className="pc-title text-[34px] font-bold leading-[0.98]">
-                                Здравствуйте, Sanjarkhuja
-                            </h1>
-                            <p className="mt-2 text-sm text-[var(--text-secondary)]">
-                                +998 (78) 113-13-00
-                            </p>
-                        </div>
-
-                        <div className="rounded-full bg-[var(--brand-primary-soft)] px-3 py-1.5 text-sm font-semibold text-[var(--brand-primary-strong)]">
-                            RU/UZ
+                            <div style={{ fontSize: 11, color: "var(--neutral-500)" }}>{label}</div>
+                            <div style={{ fontSize: 15, fontWeight: 600 }}>{value}</div>
                         </div>
                     </div>
+                ))}
+            </section>
 
-                    <div className="pc-hero p-5 text-white">
-                        <div className="relative z-10">
-                            <div className="text-[12px] uppercase tracking-[0.24em] text-white/80">
-                                Онлайн-аптека с доставкой
-                            </div>
-                            <div className="mt-2 text-[22px] font-bold leading-[1.08]">
-                                Доставка по Ташкенту и Узбекистану, удобный сервис и большой ассортимент
-                            </div>
+            {/* Сохранённые */}
+            <section style={{ background: "white", borderRadius: 24, boxShadow: "var(--shadow-sm)", overflow: "hidden" }}>
+                <div style={{
+                    display: "flex", alignItems: "center", gap: 8,
+                    padding: "16px", borderBottom: "1px solid var(--border-soft)",
+                }}>
+                    <HeartIcon width={20} height={20} fill="#ef4444" stroke="none" />
+                    <span style={{ fontSize: 18, fontWeight: 800 }}>Сохранённые</span>
+                </div>
+                <div style={{ padding: "28px 16px", textAlign: "center" }}>
+                    <p style={{ color: "var(--neutral-500)", fontSize: 14, margin: 0 }}>Нет сохранённых товаров</p>
+                    <Link href="/catalog" style={{
+                        color: "var(--brand-primary)", fontSize: 14, fontWeight: 700,
+                        display: "inline-block", marginTop: 8,
+                    }}>
+                        Перейти в каталог →
+                    </Link>
+                </div>
+            </section>
+
+            {/* О PharmaClick */}
+            <section style={{ background: "white", borderRadius: 24, boxShadow: "var(--shadow-sm)", overflow: "hidden" }}>
+                <div style={{ padding: "16px", borderBottom: "1px solid var(--border-soft)" }}>
+                    <span style={{ fontSize: 18, fontWeight: 800 }}>О PharmaClick</span>
+                </div>
+                {aboutItems.map(({ Icon, title, subtitle }, i) => (
+                    <div key={title} style={{
+                        display: "flex", alignItems: "center", gap: 14,
+                        padding: "13px 16px",
+                        borderBottom: i < aboutItems.length - 1 ? "1px solid var(--border-soft)" : "none",
+                    }}>
+                        <div style={{
+                            width: 44, height: 44, borderRadius: 14,
+                            background: "var(--green-50)",
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            color: "var(--green-700)", flexShrink: 0,
+                        }}>
+                            <Icon width={22} height={22} />
+                        </div>
+                        <div>
+                            <div style={{ fontSize: 15, fontWeight: 700 }}>{title}</div>
+                            <div style={{ fontSize: 12, color: "var(--neutral-500)", marginTop: 2 }}>{subtitle}</div>
                         </div>
                     </div>
-                </header>
+                ))}
+            </section>
 
-                <section className="pc-section-padding px-4 pt-4">
-                    <div className="mb-3 flex items-center justify-between">
-                        <h2 className="pc-title text-[26px] font-bold">Быстрый доступ</h2>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                        {quickLinks.map((item) => {
-                            const Icon = quickLinkIcons[item.icon];
-                            return (
-                            <button key={item.title} className="pc-card-strong rounded-[24px] p-4 text-left">
-                                <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-[16px] bg-[var(--brand-primary-soft)] text-[var(--brand-primary-strong)]">
-                                    <Icon width={22} height={22} />
-                                </div>
-                                <div className="text-[18px] font-semibold">{item.title}</div>
-                                <div className="mt-1 text-sm text-[var(--text-secondary)]">{item.subtitle}</div>
-                            </button>
-                            );
-                        })}
-                    </div>
-                </section>
-
-                <section className="pc-section-padding px-4 pb-32 pt-5">
-                    <div className="pc-card-strong rounded-[28px] p-5">
-                        <div className="text-[24px] font-bold">Личный кабинет</div>
-                        <div className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
-                            История заказов, адреса доставки, избранное, уведомления и управление профилем.
-                        </div>
-
-                        <div className="mt-5 space-y-3">
-                            <button className="w-full rounded-[22px] px-4 py-4 text-sm font-semibold pc-pill-button">
-                                Войти по телефону
-                            </button>
-                            <button className="w-full rounded-[22px] border border-[var(--border-strong)] bg-white px-4 py-4 text-sm font-semibold text-[var(--text-primary)]">
-                                Мои заказы
-                            </button>
-                        </div>
-                    </div>
-                </section>
-
-                <BottomNav />
-            </div>
-        </main>
+        </div>
     );
 }

@@ -157,3 +157,40 @@ export function SparkleIcon(props: IconProps) {
         </BaseIcon>
     );
 }
+
+export function PhoneIcon(props: IconProps) {
+    return (
+        <BaseIcon {...props}>
+            <path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3.1-8.7A2 2 0 014 2h3a2 2 0 012 1.7c.1 1 .4 2 .7 2.8a2 2 0 01-.4 2.1L8 9.9a16 16 0 006.1 6.1l1.3-1.3a2 2 0 012.1-.5c.9.3 1.8.5 2.8.7A2 2 0 0122 16.9z" />
+        </BaseIcon>
+    );
+}
+
+export function ShieldCheckIcon(props: IconProps) {
+    return (
+        <BaseIcon {...props}>
+            <path d="M12 2l8 3.5V11c0 5-3.5 8.5-8 10.5C7.5 19.5 4 16 4 11V5.5L12 2z" />
+            <polyline points="8.5,11.5 11,14 15.5,9.5" />
+        </BaseIcon>
+    );
+}
+
+export function TruckIcon(props: IconProps) {
+    return (
+        <BaseIcon {...props}>
+            <path d="M2 9a1.5 1.5 0 011.5-1.5h10V18H2V9z" />
+            <path d="M13.5 12H18l2.5 4V18h-7" />
+            <circle cx="6.5" cy="19.5" r="1.5" />
+            <circle cx="18" cy="19.5" r="1.5" />
+        </BaseIcon>
+    );
+}
+
+export function TagIcon(props: IconProps) {
+    return (
+        <BaseIcon {...props}>
+            <path d="M12.5 2.5H7.5a1 1 0 00-.7.3L3.3 6.3a1.5 1.5 0 000 2.1l8.3 8.3a1.5 1.5 0 002.1 0l6-6a1.5 1.5 0 000-2.1L13.2 3a1 1 0 00-.7-.5z" />
+            <circle cx="8.5" cy="8.5" r="1.3" />
+        </BaseIcon>
+    );
+}
