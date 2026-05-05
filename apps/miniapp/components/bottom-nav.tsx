@@ -33,8 +33,8 @@ export function BottomNav() {
                                     : "text-[var(--text-secondary)]"
                                 }`}
                         >
-                            <span className="text-[28px] leading-none">
-                                <Icon width={22} height={22} />
+                            <span className="pc-bottom-nav-icon">
+                                <Icon width={20} height={20} />
                             </span>
                             <span>{item.label}</span>
                         </Link>

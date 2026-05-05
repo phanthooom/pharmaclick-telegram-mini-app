@@ -82,7 +82,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                             className={`pc-bottom-nav-item ${active ? 'active' : ''}`}
                         >
                             <span className="pc-bottom-nav-icon">
-                                <Icon width={16} height={16} />
+                                <Icon width={20} height={20} />
                             </span>
                             <span>{label}</span>
                         </Link>
